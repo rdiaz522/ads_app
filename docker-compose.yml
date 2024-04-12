@@ -11,6 +11,7 @@ services:
       - ./dockerfiles/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./dockerfiles/nginx/error_log:/etc/nginx/error_log
       - ./dockerfiles/nginx/access_log:/etc/nginx/access_log
+      - .env:/var/www/html/.env
     ports:
       - "80:80"
     depends_on:
@@ -21,17 +22,19 @@ services:
 
   #mysql
   mysql:
-    image: mysql:8.3.0
+    image: mysql:8.0.21
     container_name: ads_mysql
-    restart: always
+    restart: unless-stopped
     tty: true
     environment:
-      MYSQL_DATABASE: 'ads_data'
-      MYSQL_USER: 'ads_user'
-      MYSQL_PASS: 'ads_pw'
-      MYSQL_ROOT_PASSWORD: 'ads_pw'
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASS: ${DB_PASSWORD}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
     ports:
-      - "3306:3306"
+      - "33061:3306"
     volumes:
       - ./dockerfiles/mysql/data:/var/lib/mysql
       - ./dockerfiles/mysql/my.cnf:/etc/mysql/conf.d/mysql-custom.cnf
@@ -40,10 +43,13 @@ services:
   #php
   php:
     build:
+      context: .
       dockerfile: ./dockerfiles/php/php.dockerfile
     container_name: ads_php
     volumes:
       - .:/var/www/dockerfiles
+      - ./xdebug:/var/www/xdebug
+      - ./xdebug/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       - ./ads_app:/var/www/html
     ports:
       - "9000:9000"
@@ -77,6 +83,8 @@ services:
     container_name: ads_artisan
     volumes:
       - .:/var/www/dockerfiles
+      - ./xdebug:/var/www/xdebug
+      - ./xdebug/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       - ./ads_app:/var/www/html
     depends_on:
       - mysql
