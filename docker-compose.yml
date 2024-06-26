@@ -16,7 +16,6 @@ services:
       - "80:80"
     depends_on:
       - php
-      - mysql
     networks:
       - amydressshop
 
@@ -73,8 +72,12 @@ services:
     volumes:
       - .:/var/www/dockerfiles
       - ./ads_app:/var/www/html
+    ports:
+      - "5173:5173"
     working_dir: /var/www/html
-    entrypoint: ['npm']
+    entrypoint: ['npm', 'run', 'dev']
+    networks:
+      - amydressshop
 
   artisan:
     build:
