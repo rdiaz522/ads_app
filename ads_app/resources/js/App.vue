@@ -12,7 +12,7 @@
 </style>
 
 <script>
-    import SessionTimeout from "./components/common/modal/SessionTimeout.vue";
+    import SessionTimeout from "@/components/common/modal/SessionTimeout.vue";
     import Loading from 'vue-loading-overlay';
 
     export default {

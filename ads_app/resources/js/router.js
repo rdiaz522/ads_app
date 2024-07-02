@@ -1,12 +1,12 @@
 import {createWebHistory, createRouter} from 'vue-router';
 import Login from '@/routes/login';
-import Home from '@/routes/home';
+import Dashboard from '@/routes/dashboard';
 import NotFound from '@/components/views/NotFound.vue';
 
 
 const routes = [
     Login,
-    Home,
+    Dashboard,
     {
         path: '/:pathMatch(.*)*',
         name: 'NotFound',
