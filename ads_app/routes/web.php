@@ -17,7 +17,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('login');
 
-
 Route::fallback(function() {
     return view('welcome');
 });

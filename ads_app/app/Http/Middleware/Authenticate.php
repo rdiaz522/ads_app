@@ -13,20 +13,12 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class Authenticate extends Middleware
 {
-    /**
-     * Get the path the user should be redirected to when they are not authenticated.
-     */
-    protected function redirectTo(Request $request): ?string
-    {
-        return route('login');
-    }
-
     public function handle($request, Closure $next, ...$guards)
     {
         $response = $next($request);
         try {
             if (JWTAuth::parseToken()->authenticate()) {
-               $this->checkTokenValidity($request, $response);
+                $this->checkTokenValidity($request, $response);
             }
         } catch (JWTException $e) {
             if ($e instanceof TokenInvalidException) {
@@ -62,6 +54,14 @@ class Authenticate extends Middleware
             $request->headers->set('Authorization', 'Bearer ' . $newToken);
             $response->headers->set('Authorization', 'Bearer ' . $newToken);
         }
+    }
+
+    /**
+     * Get the path the user should be redirected to when they are not authenticated.
+     */
+    protected function redirectTo(Request $request): ?string
+    {
+        return route('login');
     }
 
 }

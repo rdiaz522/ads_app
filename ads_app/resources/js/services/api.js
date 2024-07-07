@@ -1,8 +1,8 @@
 import axios from "axios";
 import Interceptors from '@/services/interceptors.service';
-import Cookie from '@/services/cookie.service';
+import { getCsrfToken } from '@/utils/csrfToken';
 
-const CSRF_TOKEN = Cookie.get('XSRF-TOKEN');
+const CSRF_TOKEN = getCsrfToken();
 
 const api = axios.create({
     baseURL: 'rest/api/',

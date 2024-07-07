@@ -29,11 +29,10 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('username', 'password');
+        $token = Auth::attempt($credentials);
 
-        if (! $token = auth()->attempt($credentials)) {
-
+        if (!$token) {
             return self::errorMessage('Invalid Credential','Incorrect Username or Password', 401);
-
         }
 
         $cookie = Cookie::make(config('custom.jwt_key'), $token, $this->expire_ttl);
@@ -52,13 +51,15 @@ class AuthController extends Controller
 
     /**
      * Log the user out (Invalidate the token).
-     *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
         auth()->invalidate();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         $removeJwtCookie = Cookie::forget(config('custom.jwt_key'));
         return self::message('Successfully logged out')->withCookie($removeJwtCookie);
     }

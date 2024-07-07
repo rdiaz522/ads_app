@@ -271,7 +271,7 @@
                     await AuthService.userLogout();
                     SessionService.logoutSession();
                     this.stopTimer();
-                    this.$router.push({name: 'login'});
+                    window.location.href = '/';
                 } catch (error) {
                     console.log(error);
                 }
