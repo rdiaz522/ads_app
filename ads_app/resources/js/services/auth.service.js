@@ -8,6 +8,10 @@ class AuthService {
     userLogout() {
         return api.post('auth/logout');
     }
+
+    refreshToken() {
+        return api.post('auth/refresh');
+    }
 }
 
 

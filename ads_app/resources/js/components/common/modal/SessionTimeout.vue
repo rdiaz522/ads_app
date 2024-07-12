@@ -11,7 +11,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" @click="logout" data-bs-dismiss="modal">Logout
                     </button>
-                    <button type="button" class="btn btn-primary" @click="continueSession" data-bs-dismiss="modal">Continue
+                    <button type="button" class="btn btn-primary" @click="continueSession" data-bs-dismiss="modal">
+                        Continue
                     </button>
                 </div>
             </div>
@@ -22,7 +23,7 @@
 <script>
     import AuthService from '@/services/auth.service';
     import SessionService from '@/services/session.service';
-    import { mapActions, mapGetters } from 'vuex';
+    import {mapActions, mapGetters} from 'vuex';
 
 
     export default {
@@ -39,8 +40,19 @@
                 this.getModalRefs(this.$refs);
             },
 
+            /**TODO :: When user click continue it will refresh the token **/
             continueSession() {
-                this.startTimer(30);
+                this.refreshToken();
+                this.startTimer(180);
+            },
+
+            async refreshToken() {
+                try {
+                    const token = await AuthService.refreshToken();
+                    console.log(token);
+                } catch (e) {
+                    console.log(e);
+                }
             },
 
             async logout() {

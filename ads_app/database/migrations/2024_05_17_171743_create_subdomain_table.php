@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subdomains', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->uuid('id');
             $table->string('name')->nullable();
-            $table->timestamps();
+            \Database\Schema\DefaultFields::add($table);
         });
     }
 

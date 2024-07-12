@@ -14,10 +14,10 @@ class UserSeeder extends Seeder
     public function run(): void
     {
          \App\Models\User::factory()->create([
+             'id' => generateGUID(),
              'username' => 'rondev522',
              'email' => 'ronarnie@gmail.com',
              'password' => Hash::make('ron123123'),
-             'subdomain_id' => 1
          ]);
     }
 }

@@ -13,12 +13,12 @@ const api = axios.create({
 });
 
 /**
- * Every request incoming
+ * Every API request incoming
  */
 Interceptors.request(api);
 
 /**
- * Every response incoming
+ * Every API response incoming
  */
 Interceptors.response(api);
 

@@ -105,9 +105,11 @@ const Sessions = {
         },
 
         getModalRefs({commit}, refs) {
-            const modalElement = refs.sessionModal;
-            const modalInstance = new bootstrap.Modal(modalElement);
-            commit('SET_MODAL_INSTANCE', modalInstance);
+            if (refs) {
+                const modalElement = refs.sessionModal;
+                const modalInstance = new bootstrap.Modal(modalElement);
+                commit('SET_MODAL_INSTANCE', modalInstance);
+            }
         },
 
         async userLogout() {

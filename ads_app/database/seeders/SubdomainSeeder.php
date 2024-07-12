@@ -14,6 +14,7 @@ class SubdomainSeeder extends Seeder
     public function run(): void
     {
         DB::table('subdomains')->insert([
+            'id' => generateGUID(),
             'name' => 'alpha',
             'created_at' => today(),
             'updated_at' => today()

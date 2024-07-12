@@ -3,16 +3,18 @@
 
 namespace App\Http\Controllers\Module\Users;
 
-
 use App\Http\Controllers\ModuleController;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Session;
+
 
 class UsersController extends ModuleController
 {
+    protected $serviceName = 'UserService';
 
     public function getUser()
     {
-        return response()->json(['message' => Cookie::get(config('custom.jwt_key'))]);
+        $userId = $this->user->id;
+        $user = $this->service->getUser($userId);
+
+        return response()->json(['data' => 'TEST']);
     }
 }

@@ -7,17 +7,19 @@ use App\Traits\AuthResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
     use AuthResponse;
+    use \App\Traits\Auth;
 
     public $expire_ttl;
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        parent::__construct();
         $this->expire_ttl = config('jwt.ttl');
     }
 
@@ -35,6 +37,7 @@ class AuthController extends Controller
             return self::errorMessage('Invalid Credential','Incorrect Username or Password', 401);
         }
 
+        $request->session()->put('token', $token);
         $cookie = Cookie::make(config('custom.jwt_key'), $token, $this->expire_ttl);
         return $this->respondWithToken($token)->withCookie($cookie);
     }
@@ -56,21 +59,27 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout();
-        auth()->invalidate();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        $removeJwtCookie = Cookie::forget(config('custom.jwt_key'));
-        return self::message('Successfully logged out')->withCookie($removeJwtCookie);
+        try {
+            Auth::logout();
+            auth()->invalidate();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            $request->session()->forget('token');
+            $removeJwtCookie = Cookie::forget(config('custom.jwt_key'));
+            return self::message('Successfully logged out')->withCookie($removeJwtCookie);
+        } catch (JWTException $error) {
+            return response()->json(['error' => $error->getMessage()], 401);
+        }
     }
 
     /**
      * Refresh a token.
-     *
+     * TODO:: FIX THIS
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh()
+    public function refresh(Request $request)
     {
+        self::refreshToken();
         return $this->respondWithToken(auth()->refresh());
     }
 

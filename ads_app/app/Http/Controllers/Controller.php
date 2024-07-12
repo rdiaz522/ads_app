@@ -2,28 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\AuthResponse;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redirect;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 
 abstract class Controller extends BaseController
 {
-    use AuthorizesRequests, ValidatesRequests;
+    use AuthorizesRequests, ValidatesRequests, AuthResponse;
 
-    /**
-     * @var User
-     */
     public $user;
-
-    protected $currentRequest;
 
     public function __construct()
     {
-        Log::info('This is Controller Module');
-
+//        $this->user = getCurrentUser();
     }
+
 
 }

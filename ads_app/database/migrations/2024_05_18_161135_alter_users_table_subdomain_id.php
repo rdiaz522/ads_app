@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            if (!Schema::hasColumn('users', 'subdomain_id')) {
-                $table->foreignId('subdomain_id')->constrained();
+            if (Schema::hasColumn('users', 'subdomain_id')) {
+                $table->foreign('subdomain_id')->references('id')->on('subdomains');
             }
         });
     }
