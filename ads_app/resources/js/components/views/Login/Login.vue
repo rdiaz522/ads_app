@@ -19,20 +19,20 @@
                                     <form class="row g-3 needs-validation" novalidate
                                           @submit.prevent="(e) => e.preventDefault()">
 
+                                        <span v-if="errors !== null && typeof errors !== 'object' && typeof errors === 'string'" > {{ errors }} </span>
+
                                         <div class="col-12">
                                             <label for="yourUsername" class="form-label">Username</label>
-                                            <div class="input-group has-validation">
-                                                <input type="text" name="email" class="form-control"
-                                                       v-model="credentials.username" id="yourUsername" required>
-                                                <div class="invalid-feedback">Please enter your username.</div>
-                                            </div>
+                                            <input type="text" name="email" class="form-control"
+                                                   v-model="credentials.username" id="yourUsername" required>
+                                            <span v-if="errors.username" > {{ errors.username[0] }} </span>
                                         </div>
 
                                         <div class="col-12">
                                             <label for="yourPassword" class="form-label">Password</label>
                                             <input type="password" name="password" class="form-control"
                                                    v-model="credentials.password" id="yourPassword" required>
-                                            <div class="invalid-feedback">Please enter your password!</div>
+                                            <span v-if="errors.password" > {{ errors.password[0] }} </span>
                                         </div>
 
                                         <div class="col-12">
@@ -47,8 +47,8 @@
                                             </button>
                                         </div>
                                         <div class="col-12">
-                                            <p class="small mb-0">Don't have account? <a href="pages-register.html">Create
-                                                an account</a></p>
+                                            <p class="small mb-0">Don't have account?  <router-link to="/register"> Create an account </router-link></p>
+
                                         </div>
                                     </form>
 
@@ -72,7 +72,8 @@
         data() {
             return {
                 credentials: {username: null, password: null},
-                token: TokenService.getToken('token')
+                token: TokenService.getToken('token'),
+                errors: {}
             }
         },
 
@@ -83,8 +84,8 @@
                         TokenService.setToken(response.data.token);
                         this.$router.push('home');
                     }
-                }, (error) => {
-                    console.log(error);
+                }, (errors) => {
+                    this.errors = errors;
                 });
             }
         }
@@ -92,4 +93,10 @@
 
 </script>
 
-<style scoped></style>
+<style scoped>
+    span {
+        color:red;
+        font-size: 0.8em;
+    }
+
+</style>

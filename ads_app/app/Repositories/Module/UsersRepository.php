@@ -8,5 +8,4 @@ class UsersRepository extends BaseRepo
 {
     protected $modelName = 'User';
 
-
 }

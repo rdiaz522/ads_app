@@ -12,33 +12,29 @@ abstract class BaseService
     public $user;
 
     /**
+     * @var Repository
+     */
+    public $repo;
+
+    /**
      * BaseService constructor.
+     * @param $repo
      */
-    public function __construct()
+    protected function __construct($repo)
     {
-//        $this->user = getCurrentUser();
+        $this->repo = $repo;
     }
 
-    /**
-     * This will populate the created_by field by user_id
-     * @param array $data
-     */
-    public function setCreatedByUser(array $data)
+
+    protected function createRecord($data)
     {
-        if (is_array($data) && !empty($data)) {
-            $data['created_by'] = !empty($data['created_by']) ? $data['created_by'] : $this->user->id;
-        }
+        $this->beforeCreate($data);
+        $this->repo->createRecord($data);
     }
 
-    /**
-     * This will populate the updated_by field by user_id
-     * @param array $data
-     */
-    public function setUpdatedByUser(array $data)
+    protected function beforeCreate(&$data)
     {
-        if (is_array($data) && !empty($data)) {
-            $data['updated_by'] = !empty($data['updated_by']) ? $data['updated_by'] : $this->user->id;
-        }
     }
+
 
 }

@@ -1,5 +1,6 @@
 import AuthService from '@/services/auth.service';
 import SessionService from '@/services/session.service';
+import sessionConfig from "@/config/sessions";
 
 const Sessions = {
     namespaced: true,
@@ -61,13 +62,13 @@ const Sessions = {
     },
 
     actions: {
-        startTimer({state, commit, dispatch}, duration) {
-            if (duration && !isNaN(duration)) {
+        startTimer({state, commit, dispatch}) {
+            if (sessionConfig.duration && !isNaN(sessionConfig.duration)) {
 
-                commit('SET_DURATION', duration);
+                commit('SET_DURATION', sessionConfig.duration);
                 commit('CLEAR_INTERVAL_ID');
 
-                if (state.sessionTimeLeft <= 60) {
+                if (state.sessionTimeLeft <= sessionConfig.refreshTokenTimeLeft) {
                     commit('SET_LOGIN_TIME', Math.floor(Date.now() / 1000));
                 }
 
@@ -85,7 +86,7 @@ const Sessions = {
         decrementTime({commit, dispatch, state}, endTime) {
             if (state.sessionTimeLeft > 0) {
                 commit('COUNTDOWN', endTime);
-                if (state.sessionTimeLeft === 30) {
+                if (state.sessionTimeLeft === sessionConfig.popModalTime) {
                     commit('SHOW_SESSION_MODAL');
                 }
             } else {

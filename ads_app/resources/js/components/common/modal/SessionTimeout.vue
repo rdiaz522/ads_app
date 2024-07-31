@@ -25,7 +25,6 @@
     import SessionService from '@/services/session.service';
     import {mapActions, mapGetters} from 'vuex';
 
-
     export default {
         name: "SessionTimeout",
 
@@ -40,18 +39,16 @@
                 this.getModalRefs(this.$refs);
             },
 
-            /**TODO :: When user click continue it will refresh the token **/
             continueSession() {
                 this.refreshToken();
-                this.startTimer(180);
+                this.startTimer();
             },
 
             async refreshToken() {
                 try {
-                    const token = await AuthService.refreshToken();
-                    console.log(token);
-                } catch (e) {
-                    console.log(e);
+                    await AuthService.refreshToken();
+                } catch (error) {
+                    console.log(error);
                 }
             },
 

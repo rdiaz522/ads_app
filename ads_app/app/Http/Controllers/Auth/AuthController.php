@@ -3,24 +3,24 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\AuthRequest;
 use App\Traits\AuthResponse;
+use App\Traits\AuthToken;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
     use AuthResponse;
-    use \App\Traits\Auth;
+    use AuthToken;
 
-    public $expire_ttl;
 
     public function __construct()
     {
         parent::__construct();
-        $this->expire_ttl = config('jwt.ttl');
     }
 
     /**
@@ -28,17 +28,17 @@ class AuthController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
+    public function login(AuthRequest $request)
     {
         $credentials = $request->only('username', 'password');
         $token = Auth::attempt($credentials);
 
         if (!$token) {
-            return self::errorMessage('Invalid Credential','Incorrect Username or Password', 401);
+            return self::errorMessage('Incorrect Username or Password!','Invalid Credential', 401);
         }
 
         $request->session()->put('token', $token);
-        $cookie = Cookie::make(config('custom.jwt_key'), $token, $this->expire_ttl);
+        $cookie = Cookie::make(config('custom.jwt_key'), $token, config('jwt.ttl'));
         return $this->respondWithToken($token)->withCookie($cookie);
     }
 
@@ -74,13 +74,15 @@ class AuthController extends Controller
 
     /**
      * Refresh a token.
-     * TODO:: FIX THIS
+     * @param Request $request
+     * @param Response $response
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh(Request $request)
+    public function refresh(Request $request, Response $response)
     {
-        self::refreshToken();
-        return $this->respondWithToken(auth()->refresh());
+       $this->refreshToken($request, $response);
+
+       return $response;
     }
 
     /**
@@ -95,7 +97,7 @@ class AuthController extends Controller
         return response()->json([
             'token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => $this->expire_ttl * 60
+            'expires_in' => config('jwt.ttl') * 60
         ]);
     }
 

@@ -1,7 +1,12 @@
 import TokenService from '@/services/token.service';
 import store from '@/store';
 import SessionService from '@/services/session.service';
-import { useToast } from 'vue-toastification'
+import { useToast } from 'vue-toastification';
+
+const exceptRoutes = [
+    'auth/login',
+    'user/register'
+]
 
 class Interceptors {
 
@@ -26,7 +31,6 @@ class Interceptors {
             if (this.token) {
                 config.headers['Authorization'] = 'Bearer ' + this.token;
             }
-
             return config;
         }, error => {
             return Promise.reject(error);
@@ -44,20 +48,30 @@ class Interceptors {
             this.onPageLoad(false);
             return response;
         }, async (error) => {
-            let isAuthorized = await this.isAuthorized(error);
-            if (!isAuthorized) {
-                SessionService.logoutSession();
-                this.initializeSessionTimer(true);
-                window.location.href = '/';
+            if (!this.isRouteExclude(error.config)) {
+                let isAuthorized = await this.isAuthorized(error);
+                if (!isAuthorized) {
+                    SessionService.logoutSession();
+                    this.initializeSessionTimer(true);
+                    window.location.href = '/';
 
-            } else {
-                this.onPageLoad(false)
-                this.initializeSessionTimer();
+                } else {
+                    this.onPageLoad(false)
+                    this.initializeSessionTimer();
+                }
+
+                this.setAuthHeader(error.response);
+
+                if (error.response.data.message) {
+                    this.toast.error(error.response.data.message);
+                }
             }
 
-            this.setAuthHeader(error.response);
-            this.toast.error(error.response.data.message);
-            return Promise.reject(error);
+            this.onPageLoad(false);
+
+            const errorResponse = this.errorResponse(error);
+
+            return errorResponse;
         });
     }
 
@@ -75,6 +89,8 @@ class Interceptors {
 
         return true;
     }
+
+
 
     /**
      * If the token is refresh from the backend
@@ -95,12 +111,26 @@ class Interceptors {
     }
 
     /**
+     * Check if the route is not include through the API Interceptor
+     * @param config
+     * @returns {boolean}
+     */
+    isRouteExclude(config) {
+        const url = config.url;
+        if (exceptRoutes.includes(url)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Initialize Session Timer
      * @param isStop
      */
     initializeSessionTimer(isStop = false) {
         if (!isStop) {
-            this.store.dispatch('Sessions/startTimer', 180);
+            this.store.dispatch('Sessions/startTimer');
         } else {
             this.store.dispatch('Sessions/stopTimer');
         }
@@ -112,6 +142,22 @@ class Interceptors {
      */
     onPageLoad(isLoading = true) {
         this.store.commit('Loading/PAGE_LOAD', isLoading);
+    }
+
+    errorResponse(error) {
+        if (error.response) {
+            const errorResponse = Promise.reject(error);;
+            switch (error.response.status) {
+                case 422:
+                case 401:
+                    return Promise.reject(error.response.data.errors);
+                    break;
+                default:
+                    return errorResponse;
+            }
+
+            return errorResponse;
+        }
     }
 
 

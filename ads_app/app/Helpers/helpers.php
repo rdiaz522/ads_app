@@ -1,22 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Cookie;
-
-if (!function_exists('getCurrentUser')) {
-    function getCurrentUser() {
-        $token = \cookie('token');
-        if ($token) {
-            $user = JWTAuth::setToken($token)->authenticate();
-
-            if ($user) {
-                return $user;
-            }
-        }
-
-        return null;
-    }
-}
-
 if (!function_exists('generateGUID')) {
     function generateGUID() {
         mt_srand((double)microtime() * 10000);

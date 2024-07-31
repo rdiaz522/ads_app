@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Traits\Auth;
+use App\Traits\AuthToken;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
@@ -15,16 +15,15 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class Authenticate extends Middleware
 {
-    use Auth;
+    use AuthToken;
 
     public function handle($request, Closure $next, ...$guards)
     {
-        $token = Cookie::get(config('custom.jwt_key'));
-
         $response = $next($request);
+
         try {
             JWTAuth::parseToken()->authenticate();
-            $this->checkTokenValidity($request, $response);
+            $this->validateToken($request, $response);
         } catch (JWTException $e) {
             if ($e instanceof TokenInvalidException) {
                 return response()->json(['error' => 'Token is Invalid'], 401);
@@ -36,30 +35,6 @@ class Authenticate extends Middleware
         }
 
         return $response;
-    }
-
-    /**
-     * This function check the expiration of the token if below refresh minute
-     * if the token is expired it will refresh the token and set in the header
-     * @param $request
-     * @param $response
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function checkTokenValidity($request, $response)
-    {
-        try {
-            $expire = JWTAuth::getClaim('exp');
-            // Calculate time to expiration
-            $exp = Carbon::createFromTimestamp($expire);
-            $now = Carbon::now();
-            $expiresIn = $exp->diffInMinutes($now);
-            $expireMin = (int) config('custom.jwt_expire_minute_refresh');
-            if ($expiresIn < $expireMin) {
-                self::refreshToken();
-            }
-        } catch (JWTException $error) {
-            return response()->json(['error' => $error->getMessage()], 401);
-        }
     }
 
     /**

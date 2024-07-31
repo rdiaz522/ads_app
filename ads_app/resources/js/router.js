@@ -2,10 +2,11 @@ import {createWebHistory, createRouter} from 'vue-router';
 import Login from '@/routes/login';
 import Dashboard from '@/routes/dashboard';
 import NotFound from '@/components/views/NotFound.vue';
-
+import Register from "@/routes/register";
 
 const routes = [
     Login,
+    Register,
     Dashboard,
     {
         path: '/:pathMatch(.*)*',

@@ -7,15 +7,17 @@ trait AuthResponse
     public static function message($message, $status = 200)
     {
         return response()->json([
+            'success' => true,
             'message' => $message,
             'status' => $status
         ], $status);
     }
 
-    public static function errorMessage($error, $message, $status = 401)
+    public static function errorMessage($errors, $message, $status = 401)
     {
         return response()->json([
-            'error' => $error,
+            'success' => false,
+            'errors' => $errors,
             'message' => $message,
             'status' => $status
         ], $status);

@@ -43,4 +43,7 @@ export default defineConfig({
             usePolling: true
         }
     },
+    build: {
+        sourcemap: true, // Ensure source maps are enabled for production builds
+    },
 });

@@ -5,6 +5,7 @@ namespace App\Services\Module;
 
 use App\Repositories\Module\UsersRepository;
 use App\Services\BaseService;
+use Illuminate\Support\Facades\Hash;
 
 class UserService extends BaseService
 {
@@ -12,19 +13,26 @@ class UserService extends BaseService
 
     public function __construct(UsersRepository $userRepository)
     {
-        parent::__construct();
-        $this->userRepository = $userRepository;
+        parent::__construct($userRepository);
     }
 
-    public function createUser()
+    public function create($data)
     {
-        $this->userRepository->createRecord();
+        $this->createRecord($data);
     }
 
-    public function getUser()
+    public function getUserById($id)
     {
-//        $user = $this->userRepository->getRecordById($this->user->id);
-//
-//        return $user;
+        return 'TEST';
     }
+
+    protected function beforeCreate(&$data)
+    {
+        if (is_array($data) && !empty($data)) {
+            $data['password'] = Hash::make($data['password']);
+            $data['login_status'] = 'Active';
+            $data['user_type'] = 'USER';
+        }
+    }
+
 }
