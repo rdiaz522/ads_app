@@ -5,14 +5,20 @@ namespace App\Http\Controllers\Module\Users;
 
 use App\Http\Controllers\ModuleController;
 use App\Http\Requests\User\UserRequest;
-use Illuminate\Support\Facades\Hash;
+use \Illuminate\Http\JsonResponse;
 
 
 class UsersController extends ModuleController
 {
-    protected $serviceName = 'UserService';
+    /**
+     * @var string UserService
+     */
+    protected string $serviceName = 'UserService';
 
-    public function getUser()
+    /**
+     * @return JsonResponse
+     */
+    public function getUser(): JsonResponse
     {
         $userId = $this->user->id;
         $user = $this->service->getUserById($userId);

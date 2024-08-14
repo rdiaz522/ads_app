@@ -12,11 +12,11 @@ abstract class BaseRepo
 
     protected $modelName;
 
-    protected $model;
+    protected mixed $model;
 
-    protected $user;
+    protected null $user;
 
-    protected $userId;
+    protected string $userId;
 
     public function __construct()
     {
@@ -25,7 +25,12 @@ abstract class BaseRepo
         $this->user = $this->getCurrentUser();
     }
 
-    public function createRecord(array $data)
+    /**
+     * Create Record
+     * @param array $data
+     * @return void
+     */
+    public function createRecord(array $data): void
     {
         $this->model = new $this->model;
         $this->userId = generateGUID();
@@ -39,12 +44,14 @@ abstract class BaseRepo
      * This will populate the updated_by field by user_id
      * @param array $data
      */
-    protected function setUpdatedByUser(array &$data)
+    protected function setUpdatedByUser(array &$data): void
     {
-        if (is_array($data) && !empty($data)) {
-
-            $data['updated_by'] = (!empty($data['updated_by']) ? $data['updated_by']
-                : $this->user) ? $this->user->id : $this->userId;
+        if (!empty($data)) {
+            if (isset($this->user->id) && !empty($this->user->id)) {
+                $data['updated_by'] = $this->user->id;
+            } else {
+                $data['updated_by'] = $this->userId;
+            }
         }
     }
 
@@ -52,15 +59,18 @@ abstract class BaseRepo
      * This will populate the created_by field by user_id
      * @param array $data
      */
-    protected function setCreatedByUser(array &$data)
+    protected function setCreatedByUser(array &$data): void
     {
-        if (is_array($data) && !empty($data)) {
-            $data['created_by'] = (!empty($data['created_by']) ? $data['created_by']
-                : $this->user) ? $this->user->id : $this->userId;
+        if (!empty($data)) {
+            if (isset($this->user->id) && !empty($this->user->id)) {
+                $data['created_by'] = $this->user->id;
+            } else {
+                $data['created_by'] = $this->userId;
+            }
         }
     }
 
-    protected function save($data)
+    protected function save(array $data): void
     {
         $this->model->fill($data);
         $this->model->save();

@@ -15,11 +15,14 @@ abstract class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests, AuthResponse, Credentials;
 
-    public $user;
+    /**
+     * @var null
+     */
+    public null $user;
 
     public function __construct()
     {
-        if (!$this->user || empty($this->user)) {
+        if (empty($this->user)) {
             $this->user = $this->getCurrentUser();
         }
     }

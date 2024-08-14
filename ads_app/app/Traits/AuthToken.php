@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -12,7 +13,7 @@ trait AuthToken {
      * @param $request
      * @param $response
      */
-    public function refreshToken($request, $response)
+    public function refreshToken($request, $response) : JsonResponse
     {
         $token = JWTAuth::getToken();
         $refreshToken = JWTAuth::refresh($token);
@@ -30,7 +31,7 @@ trait AuthToken {
      * @param $response
      * @return \Illuminate\Http\JsonResponse
      */
-    public function validateToken($request, $response)
+    public function validateToken($request, $response) : JsonResponse
     {
         try {
             $expire = JWTAuth::getClaim('exp');

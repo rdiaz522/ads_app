@@ -2,9 +2,11 @@
 
 namespace App\Traits;
 
+use \Illuminate\Http\JsonResponse;
+
 trait AuthResponse
 {
-    public static function message($message, $status = 200)
+    public static function message(string $message, int $status = 200): JsonResponse
     {
         return response()->json([
             'success' => true,
@@ -13,7 +15,7 @@ trait AuthResponse
         ], $status);
     }
 
-    public static function errorMessage($errors, $message, $status = 401)
+    public static function errorMessage(string $errors, string $message, int $status = 401): JsonResponse
     {
         return response()->json([
             'success' => false,

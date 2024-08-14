@@ -6,7 +6,7 @@ namespace App\Repositories;
 
 class RepoCaller
 {
-    CONST REPO_CLASS_PATH = "App\\Repositories\\Module\\";
+    public const REPO_CLASS_PATH = "App\\Repositories\\Module\\";
 
 
     public static function initializeModel($repoName)

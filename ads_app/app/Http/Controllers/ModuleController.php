@@ -6,9 +6,10 @@ namespace App\Http\Controllers;
 
 abstract class ModuleController extends Controller
 {
-    protected $serviceName;
 
-    protected $service;
+    protected string $serviceName;
+
+    protected mixed $service;
 
     public function __construct()
     {
