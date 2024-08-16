@@ -18,8 +18,7 @@ class AuthRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return string[]
      */
     public function rules(): array
     {
@@ -31,7 +30,10 @@ class AuthRequest extends FormRequest
         return $rules;
     }
 
-    public function messages()
+    /**
+     * @return string[]
+     */
+    public function messages() : array
     {
         return [
             'username.required' => 'Please enter your username!',
@@ -41,13 +43,10 @@ class AuthRequest extends FormRequest
 
     /**
      * Handle a failed validation attempt.
-     *
-     * @param  \Illuminate\Contracts\Validation\Validator  $validator
+     * @param Validator $validator
      * @return void
-     *
-     * @throws \Illuminate\Http\Exceptions\HttpResponseException
      */
-    protected function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator) : void
     {
         $errors = $validator->errors();
 

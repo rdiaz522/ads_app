@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Traits\AuthResponse;
 use App\Traits\Credentials;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -16,7 +17,7 @@ abstract class Controller extends BaseController
     use AuthorizesRequests, ValidatesRequests, AuthResponse, Credentials;
 
     /**
-     * @var null
+     * @var User
      */
     public null $user;
 

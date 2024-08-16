@@ -9,24 +9,23 @@ use Illuminate\Support\Facades\Hash;
 
 class UserService extends BaseService
 {
-    protected $userRepository;
 
     public function __construct(UsersRepository $userRepository)
     {
         parent::__construct($userRepository);
     }
 
-    public function create($data)
+    public function create(array $data): void
     {
         $this->createRecord($data);
     }
 
-    public function getUserById($id)
+    public function getUserById($id): string
     {
         return 'TEST';
     }
 
-    protected function beforeCreate(&$data)
+    protected function beforeCreate(&$data): void
     {
         if (is_array($data) && !empty($data)) {
             $data['password'] = Hash::make($data['password']);

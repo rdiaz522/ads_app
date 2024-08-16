@@ -26,13 +26,13 @@ abstract class BaseService
     }
 
 
-    protected function createRecord($data)
+    protected function createRecord($data): void
     {
         $this->beforeCreate($data);
         $this->repo->createRecord($data);
     }
 
-    protected function beforeCreate(&$data)
+    protected function beforeCreate(&$data): void
     {
     }
 

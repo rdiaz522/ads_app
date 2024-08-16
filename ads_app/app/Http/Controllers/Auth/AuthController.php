@@ -72,9 +72,9 @@ class AuthController extends Controller
      * Refresh a token.
      * @param Request $request
      * @param Response $response
-     * @return Response|JsonResponse
+     * @return JsonResponse
      */
-    public function refresh(Request $request, Response $response): Response|JsonResponse
+    public function refresh(Request $request, Response $response): JsonResponse
     {
         $this->refreshToken($request, $response);
         return $response;
