@@ -3,11 +3,13 @@ import Login from '@/routes/login';
 import Dashboard from '@/routes/dashboard';
 import NotFound from '@/components/views/NotFound.vue';
 import Register from "@/routes/register";
+import Customer from '@/routes/customer'; 
 
 const routes = [
     Login,
     Register,
     Dashboard,
+    Customer,
     {
         path: '/:pathMatch(.*)*',
         name: 'NotFound',

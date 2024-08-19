@@ -5,20 +5,19 @@
         <ul class="sidebar-nav" id="sidebar-nav">
 
             <li class="nav-item">
-                <a class="nav-link " href="index.html">
+                <router-link to="/home" class="nav-link collapsed">
                     <i class="bi bi-grid"></i>
                     <span>Dashboard</span>
-                </a>
+                </router-link>
             </li><!-- End Dashboard Nav -->
 
 
             <li class="nav-heading">Pages</li>
-
             <li class="nav-item">
-                <a class="nav-link collapsed" href="users-profile.html">
-                    <i class="bi bi-person"></i>
+                <router-link to="/customer-management" class="nav-link collapsed">
+                     <i class="bi bi-person"></i>
                     <span>Customer Management</span>
-                </a>
+                </router-link>
             </li><!-- End Profile Page Nav -->
 
             <li class="nav-item">

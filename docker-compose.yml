@@ -62,6 +62,7 @@ services:
       - .:/var/www/dockerfiles
       - ./ads_app:/var/www/html
     working_dir: /var/www/html
+    command: [composer, install]
     networks:
       - amydressshop
 
@@ -75,7 +76,9 @@ services:
     ports:
       - "5173:5173"
     working_dir: /var/www/html
-    entrypoint: ['npm', 'run', 'dev']
+    command: sh -c "npm install && npm run dev"
+    environment:
+      NODE_ENV: development
     networks:
       - amydressshop
 
