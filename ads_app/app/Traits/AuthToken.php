@@ -9,11 +9,12 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 trait AuthToken {
 
     /**
-     * Refresh a token and set in the request & response header
+     *  Refresh a token and set in the request & response header
      * @param $request
      * @param $response
+     * @return void
      */
-    public function refreshToken($request, $response) : JsonResponse
+    public function refreshToken($request, $response) : void
     {
         $token = JWTAuth::getToken();
         $refreshToken = JWTAuth::refresh($token);
@@ -29,9 +30,9 @@ trait AuthToken {
      * if the token is expired it will refresh the token
      * @param $request
      * @param $response
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse|null
      */
-    public function validateToken($request, $response) : JsonResponse
+    public function validateToken($request, $response) : ?JsonResponse
     {
         try {
             $expire = JWTAuth::getClaim('exp');
@@ -46,6 +47,8 @@ trait AuthToken {
         } catch (JWTException $error) {
             return response()->json(['error' => $error->getMessage()], 401);
         }
+
+        return null;
     }
 
 }

@@ -69,7 +69,6 @@ class AuthController extends Controller
     }
 
     /**
-     * Refresh a token.
      * @param Request $request
      * @param Response $response
      * @return JsonResponse

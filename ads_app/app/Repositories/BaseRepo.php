@@ -10,12 +10,24 @@ abstract class BaseRepo
 {
     use Credentials;
 
+    /**
+     * @var string
+     */
     protected $modelName;
 
+    /**
+     * @var mixed
+     */
     protected mixed $model;
 
-    protected null $user;
+    /**
+     * @var null
+     */
+    protected $user;
 
+    /**
+     * @var string
+     */
     protected string $userId;
 
     public function __construct()
