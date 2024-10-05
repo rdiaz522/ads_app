@@ -1,18 +1,17 @@
-import api from '@/services/api';
+import api from "@/services/api";
 
 class AuthService {
     userLogin(credentials) {
-        return api.post('auth/login', credentials);
+        return api.post("auth/login", credentials);
     }
 
     userLogout() {
-        return api.post('auth/logout');
+        return api.post("auth/logout");
     }
 
     refreshToken() {
-        return api.post('auth/refresh');
+        return api.post("auth/refresh");
     }
 }
-
 
 export default new AuthService();

@@ -1,9 +1,5 @@
-<template>
-    NOT FOUND
-</template>
+<template>404 NOT FOUND</template>
 
 <script>
-    export default {
-
-    }
+export default {};
 </script>

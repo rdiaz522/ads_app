@@ -1,37 +1,41 @@
 <?php
 
-
 namespace App\Services\Module;
 
-use App\Repositories\Module\UsersRepository;
 use App\Services\BaseService;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class UserService extends BaseService
 {
+    protected $modelName = 'User';
 
-    public function __construct(UsersRepository $userRepository)
+    /**
+     * Undocumented function
+     *
+     * @param array $data
+     * @return Model
+     */
+    public function store(array $data): Model
     {
-        parent::__construct($userRepository);
-    }
-
-    public function create(array $data): void
-    {
-        $this->createRecord($data);
+        // Business Logic comes here ...
+        return $this->createRecord($data);
     }
 
     public function getUserById($id): string
     {
-        return 'TEST';
+        return $id;
     }
 
-    protected function beforeCreate(&$data): void
+    public function getDataTable()
     {
-        if (is_array($data) && !empty($data)) {
-            $data['password'] = Hash::make($data['password']);
-            $data['login_status'] = 'Active';
-            $data['user_type'] = 'USER';
-        }
+        $users = $this->getRecords();
+        return $users;
     }
 
+    public function getFullName(string $id): String
+    {
+        $user = $this->model->where('id', $id)->get();
+        return $user->value('fullname');
+    }
 }

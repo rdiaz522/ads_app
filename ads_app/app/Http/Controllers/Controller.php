@@ -14,7 +14,7 @@ abstract class Controller extends BaseController
     use AuthorizesRequests, ValidatesRequests, AuthResponse, Credentials;
 
     /**
-     * @var null
+     * @var User
      */
     public $user;
 

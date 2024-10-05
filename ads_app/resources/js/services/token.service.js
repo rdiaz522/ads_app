@@ -1,15 +1,14 @@
 class TokenService {
-
-    setToken($token) {
-        return localStorage.setItem('token', $token)
+    setToken(token, name = "token") {
+        return localStorage.setItem(name, token);
     }
 
-    getToken($key) {
-        return localStorage.getItem($key);
+    getToken(key) {
+        return localStorage.getItem(key);
     }
 
-    removeToken($key) {
-        return localStorage.removeItem($key)
+    removeToken(key) {
+        return localStorage.removeItem(key);
     }
 }
 

@@ -1,22 +1,19 @@
-import TokenService from '@/services/token.service';
-import store from '@/store';
-import SessionService from '@/services/session.service';
-import { useToast } from 'vue-toastification';
+import TokenService from "@/services/token.service";
+import store from "@/store";
+import SessionService from "@/services/session.service";
+import { useToast } from "vue-toastification";
+import { getCsrfToken } from "@/utils/csrfToken";
 
-const exceptRoutes = [
-    'auth/login',
-    'user/register'
-]
+const exceptRoutes = ["auth/login"];
 
 class Interceptors {
-
     /**
      * Initialize the token
      * Initialize the Vuex (store)
      * Initialize Toast for notification
      */
     constructor() {
-        this.token = TokenService.getToken('token');
+        TokenService.setToken(getCsrfToken(), "CSRF_TOKEN");
         this.store = store;
         this.toast = useToast();
     }
@@ -26,15 +23,22 @@ class Interceptors {
      * @param api
      */
     request(api) {
-        api.interceptors.request.use(async (config) => {
-            this.onPageLoad();
-            if (this.token) {
-                config.headers['Authorization'] = 'Bearer ' + this.token;
+        api.interceptors.request.use(
+            async (config) => {
+                this.onPageLoad();
+                this.token = TokenService.getToken("token");
+                if (this.token) {
+                    config.headers["Authorization"] = "Bearer " + this.token;
+                    config.headers["X-CSRF-TOKEN"] =
+                        TokenService.getToken("CSRF_TOKEN");
+                }
+
+                return config;
+            },
+            (error) => {
+                return Promise.reject(error);
             }
-            return config;
-        }, error => {
-            return Promise.reject(error);
-        });
+        );
     }
 
     /**
@@ -42,37 +46,39 @@ class Interceptors {
      * @param api
      */
     response(api) {
-        api.interceptors.response.use(async (response) => {
-            this.initializeSessionTimer();
-            this.setAuthHeader(response);
-            this.onPageLoad(false);
-            return response;
-        }, async (error) => {
-            if (!this.isRouteExclude(error.config)) {
-                let isAuthorized = await this.isAuthorized(error);
-                if (!isAuthorized) {
-                    SessionService.logoutSession();
-                    this.initializeSessionTimer(true);
-                    window.location.href = '/';
+        api.interceptors.response.use(
+            async (response) => {
+                this.initializeSessionTimer();
+                await this.setAuthHeader(response);
+                this.onPageLoad(false);
+                return response;
+            },
+            async (error) => {
+                if (!this.isRouteExclude(error.config)) {
+                    let isAuthorized = await this.isAuthorized(error);
+                    if (!isAuthorized) {
+                        SessionService.logoutSession();
+                        this.initializeSessionTimer(true);
+                        window.location.href = "/";
+                    } else {
+                        this.onPageLoad(false);
+                        this.initializeSessionTimer();
+                    }
 
-                } else {
-                    this.onPageLoad(false)
-                    this.initializeSessionTimer();
+                    await this.setAuthHeader(error.response);
+
+                    if (error.response.data.message) {
+                        this.toast.error(error.response.data.message);
+                    }
                 }
 
-                this.setAuthHeader(error.response);
+                this.onPageLoad(false);
 
-                if (error.response.data.message) {
-                    this.toast.error(error.response.data.message);
-                }
+                const errorResponse = this.errorResponse(error);
+
+                return errorResponse;
             }
-
-            this.onPageLoad(false);
-
-            const errorResponse = this.errorResponse(error);
-
-            return errorResponse;
-        });
+        );
     }
 
     /**
@@ -83,14 +89,12 @@ class Interceptors {
      * @returns {Promise<boolean>}
      */
     async isAuthorized(error) {
-        if (error.response.status === 401) {
+        if (error.response.status === 401 || !this.token) {
             return false;
         }
 
         return true;
     }
-
-
 
     /**
      * If the token is refresh from the backend
@@ -99,11 +103,11 @@ class Interceptors {
      * @returns {Promise<*>}
      */
     async setAuthHeader(response) {
-        if (response.headers['authorization']) {
-            let authorization = await response.headers['authorization'];
+        if (response.headers["authorization"]) {
+            let authorization = await response.headers["authorization"];
             // Check for the new token in the Authorization header
             if (authorization) {
-                this.token = response.headers['authorization'].split(' ')[1];
+                this.token = response.headers["authorization"].split(" ")[1];
                 TokenService.setToken(this.token);
             }
         }
@@ -130,9 +134,9 @@ class Interceptors {
      */
     initializeSessionTimer(isStop = false) {
         if (!isStop) {
-            this.store.dispatch('Sessions/startTimer');
+            this.store.dispatch("Sessions/startTimer");
         } else {
-            this.store.dispatch('Sessions/stopTimer');
+            this.store.dispatch("Sessions/stopTimer");
         }
     }
 
@@ -141,27 +145,21 @@ class Interceptors {
      * @param isLoading
      */
     onPageLoad(isLoading = true) {
-        this.store.commit('Loading/PAGE_LOAD', isLoading);
+        this.store.commit("Loading/PAGE_LOAD", isLoading);
     }
 
     errorResponse(error) {
         if (error.response) {
-            const errorResponse = Promise.reject(error);;
+            const errorResponse = Promise.reject(error);
             switch (error.response.status) {
                 case 422:
                 case 401:
                     return Promise.reject(error.response.data.errors);
-                    break;
                 default:
                     return errorResponse;
             }
-
-            return errorResponse;
         }
     }
-
-
-
 }
 
 export default new Interceptors();

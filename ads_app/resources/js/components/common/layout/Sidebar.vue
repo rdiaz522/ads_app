@@ -63,10 +63,10 @@
             </li><!-- End Blank Page Nav -->
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-blank.html">
-                    <i class="bi bi-file-earmark"></i>
-                    <span>User Roles and Permissions</span>
-                </a>
+                <router-link to="/users" class="nav-link collapsed">
+                    <i class="bi bi-person"></i>
+                    <span>Users</span>
+                </router-link>
             </li><!-- End Blank Page Nav -->
         </ul>
 

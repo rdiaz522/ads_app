@@ -6,9 +6,9 @@ export interface UserFormData {
     username: string;
     email: string;
     subdomain_id: string;
-    user_type: UserType;
-    gender: Gender;
-    login_status: LoginStatus
+    user_type: string;
+    gender: string;
+    login_status: string;
     email_verified_at: Date;
     password: string;
     remember_token: string;
@@ -19,22 +19,3 @@ export interface UserFormData {
     deleted_at: Date;
     deleted_by: string;
 }
-
-export enum UserType {
-    Administrator = 'ADMINISTRATOR',
-    User = 'USER'
-}
-
-export enum Gender {
-    Male = 'male',
-    Female = 'female'
-}
-
-export enum LoginStatus {
-    Active = 'Active',
-    Inactive = 'Inactive'
-}
-
-
-
-

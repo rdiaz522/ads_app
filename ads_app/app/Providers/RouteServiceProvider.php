@@ -23,7 +23,7 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * @var string
      */
-    private $restApi = 'rest/api';
+    private $restApi = 'rest/api/v1';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.

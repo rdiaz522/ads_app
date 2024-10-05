@@ -1,13 +1,11 @@
 import {createWebHistory, createRouter} from 'vue-router';
-import Login from '@/routes/login';
 import Dashboard from '@/routes/dashboard';
 import NotFound from '@/components/views/NotFound.vue';
-import Register from "@/routes/register";
-import Customer from '@/routes/customer'; 
+import Customer from '@/routes/customer';
+import Users from '@/routes/users';
 
 const routes = [
-    Login,
-    Register,
+    ...Users,
     Dashboard,
     Customer,
     {
@@ -25,10 +23,10 @@ const router = new createRouter({
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('token');
     if (to.matched.some(record => record.meta.requiresAuth) && !token) {
-        next({ name : 'login'});
-    } else if (to.name === 'login' && token) {
-        next({ name : 'home'});
-    }else {
+        next({name: 'Login'});
+    } else if (to.name === 'Login' && token) {
+        next({name: 'Home'});
+    } else {
         next();
     }
 

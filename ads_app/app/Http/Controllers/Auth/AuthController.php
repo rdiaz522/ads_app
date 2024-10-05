@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
@@ -26,8 +27,9 @@ class AuthController extends Controller
     public function login(AuthRequest $request): JsonResponse
     {
         $credentials = $request->only('username', 'password');
-        $token = Auth::attempt($credentials);
 
+        $token = Auth::attempt($credentials);
+        Log::info($token);
         if ($token) {
             $request->session()->put('token', $token);
             $cookie = Cookie::make(config('custom.jwt_key'), $token, config('jwt.ttl'));
@@ -94,5 +96,4 @@ class AuthController extends Controller
             'expires_in' => config('jwt.ttl') * 60
         ]);
     }
-
 }

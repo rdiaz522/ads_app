@@ -2,12 +2,16 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Traits\ErrorHandling;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Log;
 
 class AuthRequest extends FormRequest
 {
+    use ErrorHandling;
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -33,7 +37,7 @@ class AuthRequest extends FormRequest
     /**
      * @return string[]
      */
-    public function messages() : array
+    public function messages(): array
     {
         return [
             'username.required' => 'Please enter your username!',
@@ -46,17 +50,15 @@ class AuthRequest extends FormRequest
      * @param Validator $validator
      * @return void
      */
-    protected function failedValidation(Validator $validator) : void
+    protected function failedValidation(Validator $validator): void
     {
-        $errors = $validator->errors();
-
+        $formattedErrors = self::formatErrors($validator->errors());
         $response = response()->json([
             'success' => false,
             'message' => 'Validation failed',
-            'errors' => $errors,
+            'errors' => $formattedErrors,
         ], 422);
 
         throw new HttpResponseException($response);
-
     }
 }

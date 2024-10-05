@@ -1,13 +1,25 @@
-import api from '@/services/api';
+import api from "@/services/api";
 
-class User {
-    getUser() {
-        return api.get('/user');
+class UserService {
+    getUsers() {
+        return api.get("/users");
     }
 
-    register(data) {
-        return api.post('user/register', data);
+    createUser(data) {
+        return api.post("/users", data);
+    }
+
+    updateUser(id, data) {
+        return api.post(`/users/update/${id}`, data);
+    }
+
+    getUserById(id) {
+        return api.get(`/users/${id}`);
+    }
+
+    getUserDataTable() {
+        return api.get("/users/datatable");
     }
 }
 
-export default new User();
+export default new UserService();

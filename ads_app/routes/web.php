@@ -17,10 +17,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('login');
 
-Route::get('/session', function() {
-   dd(session()->all());
+Route::get('/session', function () {
+    dd(session()->all());
 });
 
-Route::fallback(function() {
+Route::fallback(function () {
     return view('welcome');
 });

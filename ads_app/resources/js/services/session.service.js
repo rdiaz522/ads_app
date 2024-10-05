@@ -12,6 +12,7 @@ class Session {
 
     logoutSession() {
         TokenService.removeToken('token');
+        TokenService.removeToken('CSRF_TOKEN');
         Cookie.remove('XSRF-TOKEN');
     }
 }

@@ -1,39 +1,38 @@
 <template>
     <div>
-    <BaseComponent>
-        <h5>HELLO WORLD</h5>
-    </BaseComponent>
+        <BaseComponent>
+            <h5>HELLO WORLD</h5>
+        </BaseComponent>
     </div>
 </template>
 
 <script>
-    import UserService from '@/services/user.service';
-    import BaseComponent from "@/components/common/BaseComponent.vue";
+import UserService from "@/services/user.service";
+import BaseComponent from "@/components/common/BaseComponent.vue";
 
+export default {
+    name: "Dashboard",
 
-    export default {
-        name: "Dashboard",
+    components: {
+        BaseComponent,
+    },
 
-        components: {
-            BaseComponent
-        },
+    methods: {},
 
-        methods: {
-
-        },
-
-        mounted() {
-            console.log('Mounted');
-            UserService.getUser((response) => {
+    mounted() {
+        console.log("Mounted");
+        UserService.getUsers(
+            (response) => {
                 console.log(response);
-            }, (error) => {
+            },
+            (error) => {
                 console.log(error);
-            })
-        },
+            }
+        );
+    },
 
-        beforeMount() {
-            console.log('BeforeMounted');
-        }
-    }
-
+    beforeMount() {
+        console.log("BeforeMounted");
+    },
+};
 </script>

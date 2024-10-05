@@ -14,7 +14,7 @@ trait AuthToken {
      * @param $response
      * @return void
      */
-    public function refreshToken($request, $response) : void
+    private function refreshToken($request, $response) : void
     {
         $token = JWTAuth::getToken();
         $refreshToken = JWTAuth::refresh($token);
@@ -32,7 +32,7 @@ trait AuthToken {
      * @param $response
      * @return JsonResponse|null
      */
-    public function validateToken($request, $response) : ?JsonResponse
+    private function validateToken($request, $response) : ?JsonResponse
     {
         try {
             $expire = JWTAuth::getClaim('exp');

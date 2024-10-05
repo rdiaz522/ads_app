@@ -1,6 +1,7 @@
-import AuthService from '@/services/auth.service';
-import SessionService from '@/services/session.service';
+import AuthService from "@/services/auth.service";
+import SessionService from "@/services/session.service";
 import sessionConfig from "@/config/sessions";
+import { Modal } from "bootstrap";
 
 const Sessions = {
     namespaced: true,
@@ -10,12 +11,11 @@ const Sessions = {
         loginTime: 0,
         duration: 0,
         intervalId: null,
-        modalInstance: null
-
+        modalInstance: null,
     }),
 
     getters: {
-        sessionTimeLeft: state => state.sessionTimeLeft,
+        sessionTimeLeft: (state) => state.sessionTimeLeft,
     },
 
     mutations: {
@@ -24,11 +24,11 @@ const Sessions = {
         },
 
         SET_SESSION_TIME_LEFT(state, time) {
-          state.sessionTimeLeft = time;
+            state.sessionTimeLeft = time;
         },
 
         SET_LOGIN_TIME(state, time) {
-          state.loginTime = time;
+            state.loginTime = time;
         },
 
         COUNTDOWN(state, endTime) {
@@ -53,7 +53,7 @@ const Sessions = {
         },
 
         HIDE_SESSION_MODAL(state) {
-            state.modalInstance.hide()
+            state.modalInstance.hide();
         },
 
         SET_MODAL_INSTANCE(state, modalInstance) {
@@ -62,54 +62,53 @@ const Sessions = {
     },
 
     actions: {
-        startTimer({state, commit, dispatch}) {
+        startTimer({ state, commit, dispatch }) {
             if (sessionConfig.duration && !isNaN(sessionConfig.duration)) {
+                commit("SET_DURATION", sessionConfig.duration);
+                commit("CLEAR_INTERVAL_ID");
 
-                commit('SET_DURATION', sessionConfig.duration);
-                commit('CLEAR_INTERVAL_ID');
-
-                if (state.sessionTimeLeft <= sessionConfig.refreshTokenTimeLeft) {
-                    commit('SET_LOGIN_TIME', Math.floor(Date.now() / 1000));
+                if (
+                    state.sessionTimeLeft <= sessionConfig.refreshTokenTimeLeft
+                ) {
+                    commit("SET_LOGIN_TIME", Math.floor(Date.now() / 1000));
                 }
 
                 const endTime = state.loginTime + state.duration;
 
                 const intervalId = setInterval(() => {
-                    dispatch('decrementTime', endTime);
+                    dispatch("decrementTime", endTime);
                 }, 1000);
 
-                commit('SET_INTERVAL_ID', intervalId);
+                commit("SET_INTERVAL_ID", intervalId);
             }
-
         },
 
-        decrementTime({commit, dispatch, state}, endTime) {
+        decrementTime({ commit, dispatch, state }, endTime) {
             if (state.sessionTimeLeft > 0) {
-                commit('COUNTDOWN', endTime);
+                commit("COUNTDOWN", endTime);
                 if (state.sessionTimeLeft === sessionConfig.popModalTime) {
-                    commit('SHOW_SESSION_MODAL');
+                    commit("SHOW_SESSION_MODAL");
                 }
             } else {
-                commit('CLEAR_INTERVAL_ID');
-                commit('HIDE_SESSION_MODAL');
-                dispatch('userLogout');
+                commit("CLEAR_INTERVAL_ID");
+                commit("HIDE_SESSION_MODAL");
+                dispatch("userLogout");
             }
         },
 
-        stopTimer({commit}) {
-            commit('CLEAR_INTERVAL_ID');
-            commit('SET_DURATION', 0);
-            commit('SET_SESSION_TIME_LEFT', 1);
-            commit('SET_LOGIN_TIME', 0);
-            commit('SET_MODAL_INSTANCE', null);
-
+        stopTimer({ commit }) {
+            commit("CLEAR_INTERVAL_ID");
+            commit("SET_DURATION", 0);
+            commit("SET_SESSION_TIME_LEFT", 1);
+            commit("SET_LOGIN_TIME", 0);
+            commit("SET_MODAL_INSTANCE", null);
         },
 
-        getModalRefs({commit}, refs) {
+        getModalRefs({ commit }, refs) {
             if (refs) {
                 const modalElement = refs.sessionModal;
-                const modalInstance = new bootstrap.Modal(modalElement);
-                commit('SET_MODAL_INSTANCE', modalInstance);
+                const modalInstance = new Modal(modalElement);
+                commit("SET_MODAL_INSTANCE", modalInstance);
             }
         },
 
@@ -117,11 +116,11 @@ const Sessions = {
             try {
                 await AuthService.userLogout();
                 SessionService.logoutSession();
-                this.$router.push({name: 'login'});
+                this.$router.push({ name: "login" });
             } catch (error) {
                 console.log(error);
             }
-        }
+        },
     },
 };
 

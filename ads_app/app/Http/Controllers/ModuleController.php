@@ -4,21 +4,19 @@
 namespace App\Http\Controllers;
 
 
+use App\Services\Module\UserService;
+
 abstract class ModuleController extends Controller
 {
 
-    protected string $serviceName;
+    /**
+     * @var Service
+     */
+    public $service;
 
-    protected mixed $service;
-
-    public function __construct()
+    public function __construct($service)
     {
         parent::__construct();
-
-        $serviceName = "App\\Services\\Module\\" . $this->serviceName;
-        $service = resolve($serviceName);
         $this->service = $service;
     }
-
-
 }
