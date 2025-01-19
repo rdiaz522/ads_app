@@ -29,7 +29,6 @@ class AuthController extends Controller
         $credentials = $request->only('username', 'password');
 
         $token = Auth::attempt($credentials);
-        Log::info($token);
         if ($token) {
             $request->session()->put('token', $token);
             $cookie = Cookie::make(config('custom.jwt_key'), $token, config('jwt.ttl'));
